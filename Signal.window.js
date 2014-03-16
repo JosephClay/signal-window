@@ -33,6 +33,11 @@
 			return this;
 		},
 
+		setThrottle: function(ms) {
+			_throttle = +ms || 0;
+			return this;
+		},
+
 		// Private ******************************
 		_bind: function() {
 			var self = this, t;
