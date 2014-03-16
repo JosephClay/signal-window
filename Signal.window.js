@@ -1,6 +1,6 @@
 (function(Signal, _window) {
 	
-	var _throttle = 100; // ms
+	var _throttle = 50; // ms
 		
 	var Window = (Signal.core.extend(function() {
 
