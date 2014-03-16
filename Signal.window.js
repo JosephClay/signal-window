@@ -6,6 +6,7 @@
 
 		this.dimensions = this._measure();
 		this._bind();
+		this._loadUnload();
 
 	}, {
 
@@ -63,6 +64,19 @@
 				width: _window.width(),
 				height: _window.height()
 			};
+		},
+
+		// Load | Unload ******************************
+		_loadUnload: function() {
+			var self = this;
+
+			_window.on('unload.SignWindow', function() {
+				self.trigger('unload');
+			});
+
+			_window.on('load.SignWindow', function() {
+				self.trigger('load');
+			});
 		}
 	}));
 
