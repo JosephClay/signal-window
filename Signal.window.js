@@ -24,17 +24,12 @@
 		},
 
 		setThrottle: function(ms) {
-			_throttle = ms;
+			_throttle = +ms || 0;
 			return this._unbind()._bind();
 		},
 
 		destroy: function() {
 			this._unbind().trigger('destroy');
-			return this;
-		},
-
-		setThrottle: function(ms) {
-			_throttle = +ms || 0;
 			return this;
 		},
 
