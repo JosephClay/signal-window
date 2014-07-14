@@ -1,6 +1,15 @@
-(function(Signal, _window) {
+(function($, Signal, window) {
 	
-	var _throttle = 50; // ms
+	var _NAME = 'signal-window',
+		_window = $(window),
+		// throttling the resize event
+		// because it can fire quite fast
+		// and cause DOM lock. If the page
+		// is using Signal.window, it shouldn't
+		// be a big deal. Problems could occur with
+		// events firing out-of-order if scripts are
+		// using $(window).resize and Signal.window
+		_throttle = 50; // in ms
 		
 	var Window = (Signal.core.extend(function() {
 
@@ -36,21 +45,33 @@
 
 		// Private ******************************
 		_bind: function() {
-			var self = this, t;
+			var self = this,
+				timeout,
+				changeEvent = this._changeEvent = function() {
+					clearTimeout(timeout);
 
-			_window.on('resize.SignalWindow', function() {
-				clearTimeout(t);
+					timeout = setTimeout(function() {
+						self._fire();
+					}, _throttle);
+				};
 
-				t = setTimeout(function() {
-					self._fire();
-				}, _throttle);
-			});
+			_window.on('resize.' + _NAME, changeEvent);
+
+			if (window.addEventListener) {
+				window.addEventListener('orientationchange', changeEvent, false);
+			}
 
 			return this;
 		},
 
 		_unbind: function() {
-			_window.off('resize.SignalWindow');
+			_window.off('resize.' + _NAME);
+
+			if (window.removeEventListener) {
+				window.removeEventListener('orientationchange', this._changeEvent, false);
+			}
+
+			this.changeEvent = null;
 			return this;
 		},
 
@@ -70,17 +91,18 @@
 		_loadUnload: function() {
 			var self = this;
 
-			_window.on('unload.SignWindow', function() {
+			_window.on('unload.' + _NAME, function() {
 				self.trigger('unload');
 			});
 
-			_window.on('load.SignWindow', function() {
+			_window.on('load.' + _NAME, function() {
 				self.trigger('load');
 			});
 		}
 	}));
 
-	// No need to wait for document.ready as the window object is immediately available
+	// No need to wait for document.ready as
+	// the window object is immediately available
 	Signal.window = new Window();
 
-}(Signal, $(window)));
+}(jQuery, Signal, window));
