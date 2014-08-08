@@ -1,108 +1,135 @@
-(function($, Signal, window) {
-	
-	var _NAME = 'signal-window',
-		_window = $(window),
-		// throttling the resize event
-		// because it can fire quite fast
-		// and cause DOM lock. If the page
-		// is using Signal.window, it shouldn't
-		// be a big deal. Problems could occur with
-		// events firing out-of-order if scripts are
-		// using $(window).resize and Signal.window
-		_throttle = 50; // in ms
-		
-	var Window = (Signal.core.extend(function() {
+(function(Signal, window, document, undefined) {
 
-		this.dimensions = this._measure();
-		this._bind();
-		this._loadUnload();
+	var _observable = Signal.construct(),
 
-	}, {
+		// memoize the body so that
+		// measures aren't constantly
+		// querying the DOM
+		_body = (function() {
+			var body;
+			return function() {
+				return body || (body = document.getElementsByTagName('body')[0]);
+			};
+		}()),
 
-		// Public ******************************
-		getDimensions: function() {
-			return this.dimensions;
-		},
-
-		measure: function() {
-			this.dimensions = this._measure();
-			return this.dimensions;
-		},
-
-		update: function() {
-			return this._fire();
-		},
-
-		setThrottle: function(ms) {
-			_throttle = +ms || 0;
-			return this._unbind()._bind();
-		},
-
-		destroy: function() {
-			this._unbind().trigger('destroy');
-			return this;
-		},
-
-		// Private ******************************
-		_bind: function() {
-			var self = this,
-				timeout,
-				changeEvent = this._changeEvent = function() {
-					clearTimeout(timeout);
-
-					timeout = setTimeout(function() {
-						self._fire();
-					}, _throttle);
-				};
-
-			_window.on('resize.' + _NAME, changeEvent);
-
-			if (window.addEventListener) {
-				window.addEventListener('orientationchange', changeEvent, false);
-			}
-
-			return this;
-		},
-
-		_unbind: function() {
-			_window.off('resize.' + _NAME);
-
-			if (window.removeEventListener) {
-				window.removeEventListener('orientationchange', this._changeEvent, false);
-			}
-
-			this.changeEvent = null;
-			return this;
-		},
-
-		_fire: function() {
-			this.trigger('resize', this.dimensions = this.measure());
-			return this;
-		},
-
-		_measure: function() {
+		// See: http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
+		// This is the same method that jQuery uses
+		// to get the window size
+		_measure = function() {
 			return {
-				width: _window.width(),
-				height: _window.height()
+				width:  window.innerWidth  || document.documentElement.clientWidth  || _body().clientWidth,
+				height: window.innerHeight || document.documentElement.clientHeight || _body().clientHeight
 			};
 		},
 
-		// Load | Unload ******************************
-		_loadUnload: function() {
-			var self = this;
+		// We've setup the measure function,
+		// so start out the script with some
+		// dimensions
+		_dimensions = _measure(),
 
-			_window.on('unload.' + _NAME, function() {
-				self.trigger('unload');
-			});
+		// Event Helpers to attach and detach
+		// events in IE8+
+		_addEventListener = function(elem, eventName, handler) {
+			if (elem.addEventListener) {
+				return elem.addEventListener(eventName, handler);
+			}
 
-			_window.on('load.' + _NAME, function() {
-				self.trigger('load');
+			elem.attachEvent('on' + eventName, function() {
+				handler.call(elem);
 			});
+		},
+		_removeEventListener = function(elem, eventName, handler) {
+			if (elem.removeEventListener) {
+				return elem.removeEventListener(eventName, handler);
+			}
+
+			elem.detachEvent('on' + eventName, handler);
+		},
+
+		// Events strings. variablized as
+		// constants for minification
+		_RESIZE            = 'resize',
+		_ORIENTATIONCHANGE = 'orientationchange',
+		_UNLOAD            = 'unload',
+		_LOAD              = 'load';
+
+	// Events ******************************
+
+	// Store the functions passed to addEventListener
+	// so that they can be unbound by the user
+
+	var _eventOrientationChange = function() {
+			_observable.trigger(_ORIENTATIONCHANGE, (_dimensions = _measure()));
+		},
+		_eventUnload = function() {
+			_observable.trigger(_UNLOAD, (_dimensions = _measure()));
+		},
+		_eventLoad = function() {
+			_observable.trigger(_LOAD, (_dimensions = _measure()));
+		},
+
+		// Setup a pending resize function which raf will call
+		// if there's a resize event queued
+		_pendingResize,
+		_pendingResizeEvent = function() {
+			_observable.trigger(_RESIZE, (_dimensions = _measure()));
+		},
+		// In this case, our event resize simply assigns
+		// the pendingResizeEvent (which dispatches the dimensions)
+		// to the pendingResize variable
+		_eventResize = function() {
+			_pendingResize = _pendingResizeEvent;
+		};
+
+	// Bindings ******************************
+
+	var _bind = function() {
+			_addEventListener(window, _RESIZE,            _eventResize);
+			_addEventListener(window, _ORIENTATIONCHANGE, _eventOrientationChange);
+			_addEventListener(window, _UNLOAD,            _eventUnload);
+			_addEventListener(window, _LOAD,              _eventLoad);
+		},
+		_unbind = function() {
+			_removeEventListener(window, _RESIZE,            _eventResize);
+			_removeEventListener(window, _ORIENTATIONCHANGE, _eventOrientationChange);
+			_removeEventListener(window, _UNLOAD,            _eventUnload);
+			_removeEventListener(window, _LOAD,              _eventLoad);
+		};
+
+	// Init ******************************
+
+	_bind();
+
+	// Public ******************************
+
+	_observable.tick = function() {
+		if (_pendingResize) {
+			_pendingResize();
+			_pendingResize = undefined;
 		}
-	}));
+		return _observable;
+	};
 
-	// No need to wait for document.ready as
-	// the window object is immediately available
-	Signal.window = new Window();
+	_observable.getDimensions = function() {
+		return _dimensions;
+	};
 
-}(jQuery, Signal, window));
+	_observable.measure = function() {
+		_dimensions = _measure();
+		return _dimensions;
+	};
+
+	_observable.update = function() {
+		return _eventResize();
+	};
+
+	_observable.destroy = function() {
+		_unbind();
+		_observable.trigger('destroy');
+		return _observable;
+	};
+
+	// Expose the api
+	Signal.window = _observable;
+
+}(Signal, this, document));
