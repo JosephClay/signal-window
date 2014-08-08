@@ -1,7 +1,7 @@
 Signal.window
 =============
 
-Window resize events without the DOM trashing.
+Window resize events without the DOM trashing for 1kb!
 
 ```
 var doSomething = function(dimensions) {};
