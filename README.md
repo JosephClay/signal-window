@@ -5,10 +5,10 @@ Window resize events without the DOM trashing.
 
 ```
 var doSomething = function(dimensions) {};
-Signal.window.on('resize', doSomething);
-Signal.window.on('orientationchange', doSomething);
-Signal.window.on('unload', doSomething);
-Signal.window.on('load', doSomething);
+Signal.window.on('resize', doSomething)
+	.on('orientationchange', doSomething)
+	.on('unload', doSomething)
+	.on('load', doSomething);
 ```
 
 Setup
