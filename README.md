@@ -14,7 +14,8 @@ Signal.window.on('resize', doSomething)
 Setup
 =============
 
-Include in page and latch into requestAnimationFrame
+1. Include [Signal](https://github.com/JosephClay/Signal) and [Signal.window](https://github.com/JosephClay/Signal.window) in the page.
+2. Latch into requestAnimationFrame:
 ```
 var tick = function() {
 	Signal.window.tick();
