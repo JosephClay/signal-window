@@ -140,6 +140,6 @@
 	};
 
 	// Expose the api
-	signal.window = _observable;
+	return _observable;
 
 });
