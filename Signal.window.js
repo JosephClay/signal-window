@@ -1,6 +1,16 @@
-(function(Signal, window, document, undefined) {
+(function(name, window, document, factory) {
 
-	var _observable = Signal.construct(),
+    if (typeof define === 'function') { // RequireJS
+        define(['signal-js', window, document], factory);
+    } else if (typeof module !== 'undefined' && module.exports) { // CommonJS
+        module.exports = factory(require('signal-js'), window, document);
+    } else { // Browser
+        this.signal[name] = factory(this.signal, window, document);
+    }
+
+})('window', window, document, function(signal, window, document, undefined) {
+
+	var _observable = signal.construct(),
 
 		// memoize the body so that
 		// measures aren't constantly
@@ -130,6 +140,6 @@
 	};
 
 	// Expose the api
-	Signal.window = _observable;
+	signal.window = _observable;
 
-}(Signal, this, document));
+});
