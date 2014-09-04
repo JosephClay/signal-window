@@ -1,4 +1,4 @@
-Signal.window
+signal-window
 =============
 
 Window resize events without the DOM trashing for 1kb!
