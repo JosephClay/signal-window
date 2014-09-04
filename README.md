@@ -18,7 +18,7 @@ signal.window.on('resize', doSomething)
 Setup
 =============
 
-1. Include [signal](https://github.com/JosephClay/signal) and [signal.window](https://github.com/JosephClay/signal.window) in the page.
+1. Include [signal](https://github.com/JosephClay/signal-js) and [signal-window](https://github.com/JosephClay/signal-window/blob/master/signal-window.js) in the page.
 2. Latch into requestAnimationFrame:
 ```
 var tick = function() {
