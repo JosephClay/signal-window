@@ -4,8 +4,12 @@ Signal.window
 Window resize events without the DOM trashing for 1kb!
 
 ```
+npm install signal-window
+```
+
+```
 var doSomething = function(dimensions) {};
-Signal.window.on('resize', doSomething)
+signal.window.on('resize', doSomething)
 	.on('orientationchange', doSomething)
 	.on('unload', doSomething)
 	.on('load', doSomething);
@@ -14,11 +18,11 @@ Signal.window.on('resize', doSomething)
 Setup
 =============
 
-1. Include [Signal](https://github.com/JosephClay/Signal) and [Signal.window](https://github.com/JosephClay/Signal.window) in the page.
+1. Include [signal](https://github.com/JosephClay/signal) and [signal.window](https://github.com/JosephClay/signal.window) in the page.
 2. Latch into requestAnimationFrame:
 ```
 var tick = function() {
-	Signal.window.tick();
+	signal.window.tick();
 	requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
