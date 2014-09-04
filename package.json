@@ -2,7 +2,7 @@
   "name": "signal-window",
   "version": "0.0.1",
   "description": "A window resize manager using signal-js",
-  "main": "index.js",
+  "main": "signal-window.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
