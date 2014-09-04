@@ -1,6 +1,6 @@
 {
   "name": "signal-window",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A window resize manager using signal-js",
   "main": "signal-window.js",
   "scripts": {
