@@ -1,7 +1,7 @@
 signal-window
 =============
 
-Window resize events without the DOM trashing for 1kb!
+Window events without the DOM trashing for 1kb!
 
 ```
 npm install signal-window
