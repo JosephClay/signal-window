@@ -1,6 +1,6 @@
 {
   "name": "signal-window",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "A window resize manager using signal-js",
   "main": "signal-window.js",
   "scripts": {
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JosephClay/Signal.window.git"
+    "url": "https://github.com/JosephClay/signal-window.git"
   },
   "author": "Joseph Clay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JosephClay/Signal.window/issues"
+    "url": "https://github.com/JosephClay/signal-window/issues"
   },
-  "homepage": "https://github.com/JosephClay/Signal.window",
+  "homepage": "https://github.com/JosephClay/signal-window",
   "dependencies": {
-    "signal-js": "0.0.3"
+    "signal-js": "0.9.0"
   }
 }
