@@ -32,6 +32,8 @@
 			};
 		},
 
+		_top = window.pageYOffset,
+
 		// We've setup the measure function,
 		// so start out the script with some
 		// dimensions
@@ -61,7 +63,8 @@
 		_RESIZE            = 'resize',
 		_ORIENTATIONCHANGE = 'orientationchange',
 		_UNLOAD            = 'unload',
-		_LOAD              = 'load';
+		_LOAD              = 'load',
+		_SCROLL            = 'scroll';
 
 	// Events ******************************
 
@@ -73,6 +76,9 @@
 		},
 		_eventUnload = function() {
 			_observable.trigger(_UNLOAD, (_dimensions = _measure()));
+		},
+		_eventScroll = function() {
+			_observable.trigger(_SCROLL, (_top = window.pageYOffset));
 		},
 		_eventLoad = function() {
 			_observable.trigger(_LOAD, (_dimensions = _measure()));
@@ -95,12 +101,14 @@
 
 	var _bind = function() {
 			_addEventListener(window, _RESIZE,            _eventResize);
+			_addEventListener(window, _SCROLL,            _eventScroll);
 			_addEventListener(window, _ORIENTATIONCHANGE, _eventOrientationChange);
 			_addEventListener(window, _UNLOAD,            _eventUnload);
 			_addEventListener(window, _LOAD,              _eventLoad);
 		},
 		_unbind = function() {
 			_removeEventListener(window, _RESIZE,            _eventResize);
+			_removeEventListener(window, _SCROLL,            _eventScroll);
 			_removeEventListener(window, _ORIENTATIONCHANGE, _eventOrientationChange);
 			_removeEventListener(window, _UNLOAD,            _eventUnload);
 			_removeEventListener(window, _LOAD,              _eventLoad);
@@ -120,13 +128,16 @@
 		return _observable;
 	};
 
-	_observable.getDimensions = function() {
+	_observable.scrollTop = function() {
+		return _top;
+	};
+
+	_observable.dimensions = function() {
 		return _dimensions;
 	};
 
 	_observable.measure = function() {
-		_dimensions = _measure();
-		return _dimensions;
+		return (_dimensions = _measure());
 	};
 
 	_observable.update = function() {
