@@ -10,7 +10,7 @@
 
 })('window', window, document, function(signal, window, document, undefined) {
 
-	var _observable = signal.construct(),
+	var _observable = signal.create(),
 
 		// memoize the body so that
 		// measures aren't constantly
