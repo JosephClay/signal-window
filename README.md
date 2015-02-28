@@ -1,28 +1,34 @@
 signal-window
 =============
 
-Window events without the DOM trashing for 1kb!
+Window events without the DOM thrashing. `signal-window` will hold onto calculated window values and only
+update them when they change and only inside a rAF tick. Get `width`, `height` and `scrollTop` from anywhere
+in your code without having to remeasure the window (and hit the DOM) constantly.
 
 ```
 npm install signal-window
 ```
 
+Basic usage
+=============
+
 ```
-var doSomething = function(dimensions) {};
-signal.window.on('resize', doSomething)
-	.on('orientationchange', doSomething)
-	.on('unload', doSomething)
-	.on('load', doSomething);
+var win = require('signal-window');
+win.on('resize', doResize)
+    .on('orientationchange', doChange)
+    .on('unload', doUnload)
+    .on('scroll', doScroll)
+    .on('load', doLoad);
 ```
 
 Setup
 =============
 
-1. Include [signal](https://github.com/JosephClay/signal-js) and [signal-window](https://github.com/JosephClay/signal-window/blob/master/signal-window.js) in the page.
-2. Latch into requestAnimationFrame:
+Latch into requestAnimationFrame:
 ```
+var win = require('signal-window');
 var tick = function() {
-	signal.window.tick();
+	win.tick();
 	requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
