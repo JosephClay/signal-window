@@ -150,6 +150,19 @@
 		return observable;
 	};
 
+	// mini raf based on:
+	// https://gist.github.com/paulirish/1579671
+	var raf = window.requestAnimationFrame || (function() {
+        var lastTime = 0;
+        return function(callback) {
+            var currTime = new Date().getTime(),
+            	timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            window.setTimeout(callback, timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+    }());
+
 	// Expose the api
 	return observable;
 
