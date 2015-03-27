@@ -5,7 +5,7 @@
     } else if (typeof module !== 'undefined' && module.exports) { // CommonJS
         module.exports = factory(require('signal-js'), window, document);
     } else { // Browser
-        this.signal[name] = factory(this.signal, window, document);
+        window.signal[name] = factory(window.signal, window, document);
     }
 
 })('window', window, document, function(signal, window, document, undefined) {
