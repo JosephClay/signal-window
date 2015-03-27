@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/JosephClay/signal-window",
   "dependencies": {
-    "signal-js": "0.9.0"
+    "signal-js": "^1.0.0"
   }
 }
