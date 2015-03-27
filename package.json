@@ -3,9 +3,7 @@
   "version": "0.1.1",
   "description": "A window resize manager using signal-js",
   "main": "signal-window.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/JosephClay/signal-window.git"
