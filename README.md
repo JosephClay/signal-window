@@ -24,7 +24,12 @@ win.on('resize', doResize)
 Setup
 =============
 
-Latch into requestAnimationFrame:
+Call start...
+```
+require('signal-window').start();
+```
+
+...or latch into your existing requestAnimationFrame:
 ```
 var win = require('signal-window');
 var tick = function() {
