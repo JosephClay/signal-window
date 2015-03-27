@@ -1,6 +1,6 @@
 {
   "name": "signal-window",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "window events without the DOM thrashing",
   "main": "signal-window.js",
   "scripts": {},
