@@ -18,7 +18,7 @@
 		_body = (function() {
 			var body;
 			return function() {
-				return body || (body = document.getElementsByTagName('body')[0]);
+				return body || (body = document.body);
 			};
 		}()),
 
