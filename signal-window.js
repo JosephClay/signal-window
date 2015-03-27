@@ -10,7 +10,7 @@
 
 })('window', window, document, function(signal, window, document, undefined) {
 
-	var _observable = signal.create(),
+	var observable = signal.create(),
 
 		// memoize the body so that
 		// measures aren't constantly
@@ -72,23 +72,23 @@
 	// so that they can be unbound by the user
 
 	var _eventOrientationChange = function() {
-			_observable.trigger(_ORIENTATIONCHANGE, (_dimensions = _measure()));
+			observable.trigger(_ORIENTATIONCHANGE, (_dimensions = _measure()));
 		},
 		_eventUnload = function() {
-			_observable.trigger(_UNLOAD, (_dimensions = _measure()));
+			observable.trigger(_UNLOAD, (_dimensions = _measure()));
 		},
 		_eventScroll = function() {
-			_observable.trigger(_SCROLL, (_top = window.pageYOffset));
+			observable.trigger(_SCROLL, (_top = window.pageYOffset));
 		},
 		_eventLoad = function() {
-			_observable.trigger(_LOAD, (_dimensions = _measure()));
+			observable.trigger(_LOAD, (_dimensions = _measure()));
 		},
 
 		// Setup a pending resize function which raf will call
 		// if there's a resize event queued
 		_pendingResize,
 		_pendingResizeEvent = function() {
-			_observable.trigger(_RESIZE, (_dimensions = _measure()));
+			observable.trigger(_RESIZE, (_dimensions = _measure()));
 		},
 		// In this case, our event resize simply assigns
 		// the pendingResizeEvent (which dispatches the dimensions)
@@ -120,37 +120,37 @@
 
 	// Public ******************************
 
-	_observable.tick = function() {
+	observable.tick = function() {
 		if (_pendingResize) {
 			_pendingResize();
 			_pendingResize = undefined;
 		}
-		return _observable;
+		return observable;
 	};
 
-	_observable.scrollTop = function() {
+	observable.scrollTop = function() {
 		return _top;
 	};
 
-	_observable.dimensions = function() {
+	observable.dimensions = function() {
 		return _dimensions;
 	};
 
-	_observable.measure = function() {
+	observable.measure = function() {
 		return (_dimensions = _measure());
 	};
 
-	_observable.update = function() {
+	observable.update = function() {
 		return _eventResize();
 	};
 
-	_observable.destroy = function() {
+	observable.destroy = function() {
 		_unbind();
-		_observable.trigger('destroy');
-		return _observable;
+		observable.trigger('destroy');
+		return observable;
 	};
 
 	// Expose the api
-	return _observable;
+	return observable;
 
 });
