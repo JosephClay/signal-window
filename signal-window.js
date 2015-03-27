@@ -163,6 +163,22 @@
         };
     }());
 
+	// quick and dirty once
+    observable.start = (function() {
+    	var tick = function() {
+    			observable.tick();
+    			raf(tick);
+    		},
+    		running = false;
+    	
+    	return function() {
+    		if (running) { return observable; }
+    		running = true;
+    		raf(tick);
+    		return observable;
+    	};
+    }());
+
 	// Expose the api
 	return observable;
 
