@@ -9,6 +9,8 @@ in your code without having to remeasure the window (and hit the DOM) constantly
 npm install signal-window
 ```
 
+NOTE: as on 1.1.0, this repo is ES6 with CommonJS, the prebuilt file can be found in `/dist/`.
+
 Basic usage
 =============
 
