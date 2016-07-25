@@ -1,9 +1,11 @@
 {
   "name": "signal-window",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "window events without the DOM thrashing",
-  "main": "signal-window.js",
-  "scripts": {},
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "browserify ./src/index.js -t babelify --outfile ./dist/signal-window.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/JosephClay/signal-window.git"
@@ -16,5 +18,14 @@
   "homepage": "https://github.com/JosephClay/signal-window",
   "dependencies": {
     "signal-js": "^1.0.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "devDependencies": {
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1"
   }
 }
