@@ -81,7 +81,7 @@ bind();
 
 // Public ******************************
 
-module.exports = Object.assign(emitter, {
+export default Object.assign(emitter, {
 	tick() {
 		if (pendingResize) {
 			pendingResize();
