@@ -1,27 +1,26 @@
-const window = global;
-const signal = require('signal-js');
-const body = require('./body');
-const html = require('./html');
-const observable = signal.create();
-const raf = window.requestAnimationFrame;
+import signal from 'signal-js';
+import body from './body';
+import html from './html';
+
+const emitter = signal();
 
 // See: http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
 // This is the same method that jQuery uses
-// to get the window size
+// to get the global size
 const measure = function() {
-	const h = html();
-	const b = body();
+	const doc = html();
+	const bod = body();
 
 	return {
-		width:  window.innerWidth  || (h && h.clientWidth)  || (b && b.clientWidth),
-		height: window.innerHeight || (h && h.clientHeight) || (b && b.clientHeight)
+		width: global.innerWidth || (doc && doc.clientWidth) || (bod && bod.clientWidth),
+		height: global.innerHeight || (doc && doc.clientHeight) || (bod && bod.clientHeight)
 	};
 };
 
 const scrollMeasure = function() {
 	return {
-		top: window.pageYOffset,
-		left: window.pageXOffset
+		top: global.pageYOffset,
+		left: global.pageXOffset
 	};
 };
 
@@ -33,59 +32,47 @@ let scrollPosition = scrollMeasure();
 
 // Events strings. variablized as
 // constants for minification
-const RESIZE            = 'resize';
+const RESIZE = 'resize';
 const ORIENTATIONCHANGE = 'orientationchange';
-const UNLOAD            = 'unload';
-const LOAD              = 'load';
-const SCROLL            = 'scroll';
+const UNLOAD = 'unload';
+const LOAD = 'load';
+const SCROLL = 'scroll';
 
 // Events ******************************
 
 // Store the functions passed to addEventListener
 // so that they can be unbound by the user
 
-const eventOrientationChange = function() {
-	observable.trigger(ORIENTATIONCHANGE, (dimensions = measure()));
-};
-const eventUnload = function() {
-	observable.trigger(UNLOAD, (dimensions = measure()));
-};
-const eventScroll = function() {
-	observable.trigger(SCROLL, (scrollPosition = scrollMeasure()));
-};
-const eventLoad = function() {
-	observable.trigger(LOAD, (dimensions = measure()));
-};
+const eventOrientationChange = () => emitter.emit(ORIENTATIONCHANGE, (dimensions = measure()));
+const eventUnload = () => emitter.emit(UNLOAD, (dimensions = measure()));
+const eventScroll = () => emitter.emit(SCROLL, (scrollPosition = scrollMeasure()));
+const eventLoad = () => emitter.emit(LOAD, (dimensions = measure()));
 
 // Setup a pending resize function which raf will call
 // if there's a resize event queued
 let pendingResize;
-const pendingResizeEvent = function() {
-	observable.trigger(RESIZE, (dimensions = measure()));
-};
+const pendingResizeEvent = () => emitter.trigger(RESIZE, (dimensions = measure()));
 // In this case, our event resize simply assigns
 // the pendingResizeEvent (which dispatches the dimensions)
 // to the pendingResize variable
-const eventResize = function() {
-	pendingResize = pendingResizeEvent;
-};
+const eventResize = () => (pendingResize = pendingResizeEvent);
 
 // Bindings ******************************
 
 const bind = function() {
-	window.addEventListener(RESIZE,            eventResize,            false);
-	window.addEventListener(SCROLL,            eventScroll,            false);
-	window.addEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
-	window.addEventListener(UNLOAD,            eventUnload,            false);
-	window.addEventListener(LOAD,              eventLoad,              false);
+	global.addEventListener(RESIZE, eventResize, false);
+	global.addEventListener(SCROLL, eventScroll, false);
+	global.addEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
+	global.addEventListener(UNLOAD, eventUnload, false);
+	global.addEventListener(LOAD, eventLoad, false);
 };
 
 const unbind = function() {
-	window.removeEventListener(RESIZE,            eventResize,            false);
-	window.removeEventListener(SCROLL,            eventScroll,            false);
-	window.removeEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
-	window.removeEventListener(UNLOAD,            eventUnload,            false);
-	window.removeEventListener(LOAD,              eventLoad,              false);
+	global.removeEventListener(RESIZE, eventResize, false);
+	global.removeEventListener(SCROLL, eventScroll, false);
+	global.removeEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
+	global.removeEventListener(UNLOAD, eventUnload, false);
+	global.removeEventListener(LOAD, eventLoad, false);
 };
 
 // Init ******************************
@@ -94,13 +81,13 @@ bind();
 
 // Public ******************************
 
-module.exports = Object.assign(observable, {
+module.exports = Object.assign(emitter, {
 	tick() {
 		if (pendingResize) {
 			pendingResize();
 			pendingResize = undefined;
 		}
-		return observable;
+		return emitter;
 	},
 
 	scroll() {
@@ -133,23 +120,25 @@ module.exports = Object.assign(observable, {
 
 	destroy() {
 		unbind();
-		observable.trigger('destroy');
-		return observable;
+		emitter.trigger('destroy');
+		return emitter;
 	},
 
 	// quick and dirty once
 	start: (function() {
+		const raf = global.requestAnimationFrame;
+
 		const tick = function() {
-			observable.tick();
+			emitter.tick();
 			raf(tick);
 		};
 		let running = false;
 
 		return function() {
-			if (running) { return observable; }
+			if (running) { return emitter; }
 			running = true;
 			raf(tick);
-			return observable;
+			return emitter;
 		};
 	}())
 });

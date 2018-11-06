@@ -1,31 +1,48 @@
 {
   "name": "signal-window",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "window events without the DOM thrashing",
   "main": "./src/index.js",
   "scripts": {
-    "build": "browserify ./src/index.js -t babelify --outfile ./dist/signal-window.js"
+    "test": "node -r esm test",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/JosephClay/signal-window.git"
   },
-  "author": "Joseph Clay",
+  "engines": {
+    "node": "10.5.0",
+    "npm": "6.4.1"
+  },
+  "author": {
+    "name": "Joe Clay",
+    "email": "j053phclay@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JosephClay/signal-window/issues"
   },
   "homepage": "https://github.com/JosephClay/signal-window",
   "dependencies": {
-    "signal-js": "^1.0.0"
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
+    "signal-js": "^2.0.0"
   },
   "devDependencies": {
-    "babelify": "^7.3.0",
-    "browserify": "^13.0.1"
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/runtime": "^7.1.2",
+    "autoprefixer": "^9.3.1",
+    "babel-loader": "^8.0.4",
+    "benchmark": "^2.1.4",
+    "compression-webpack-plugin": "^2.0.0",
+    "css-mqpacker": "^7.0.0",
+    "date-fns": "^1.29.0",
+    "dotenv": "^6.0.0",
+    "esm": "^3.0.80",
+    "lodash": "^4.17.11",
+    "tape": "^4.9.1",
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.2"
   }
 }
