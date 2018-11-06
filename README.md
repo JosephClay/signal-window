@@ -1,8 +1,8 @@
 ## signal-window
 
 Window events without the DOM thrashing. `signal-window` will hold onto calculated window values and only
-update them when they change and only inside a rAF tick. Get `width`, `height` and `scrollTop` from anywhere
-in your code without having to remeasure the window (and hit the DOM) constantly.
+update them when they change and only inside a `requestAnimationFrame` tick. Get `width`, `height` and 
+`scrollTop` from anywhere in your code without having to remeasure the window (and hit the DOM) constantly.
 
 ## Intallation
 
