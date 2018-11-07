@@ -2,7 +2,19 @@ import signal from 'signal-js';
 import body from './body';
 import html from './html';
 
+// events strings variablized as
+// constants for minification
+const RESIZE = 'resize';
+const ORIENTATIONCHANGE = 'orientationchange';
+const UNLOAD = 'unload';
+const LOAD = 'load';
+const SCROLL = 'scroll';
+
+// the emitter
 const emitter = signal();
+
+// our data object
+const data = {};
 
 // See: http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
 // This is the same method that jQuery uses
@@ -11,47 +23,33 @@ const measure = function() {
 	const doc = html();
 	const bod = body();
 
-	return {
-		width: global.innerWidth || (doc && doc.clientWidth) || (bod && bod.clientWidth),
-		height: global.innerHeight || (doc && doc.clientHeight) || (bod && bod.clientHeight)
-	};
+	data.width = global.innerWidth || (doc && doc.clientWidth) || (bod && bod.clientWidth),
+	data.height = global.innerHeight || (doc && doc.clientHeight) || (bod && bod.clientHeight)
+	
+	return data;
 };
 
 const scrollMeasure = function() {
-	return {
-		top: global.pageYOffset,
-		left: global.pageXOffset
-	};
+	data.top = global.pageYOffset;
+	data.left = global.pageXOffset;
+	
+	return data;
 };
-
-// We've setup the measure function,
-// so start out the script with some
-// dimensions
-let dimensions = measure();
-let scrollPosition = scrollMeasure();
-
-// Events strings. variablized as
-// constants for minification
-const RESIZE = 'resize';
-const ORIENTATIONCHANGE = 'orientationchange';
-const UNLOAD = 'unload';
-const LOAD = 'load';
-const SCROLL = 'scroll';
 
 // Events ******************************
 
 // Store the functions passed to addEventListener
 // so that they can be unbound by the user
 
-const eventOrientationChange = () => emitter.emit(ORIENTATIONCHANGE, (dimensions = measure()));
-const eventUnload = () => emitter.emit(UNLOAD, (dimensions = measure()));
-const eventScroll = () => emitter.emit(SCROLL, (scrollPosition = scrollMeasure()));
-const eventLoad = () => emitter.emit(LOAD, (dimensions = measure()));
+const eventOrientationChange = () => emitter.emit(ORIENTATIONCHANGE, measure());
+const eventUnload = () => emitter.emit(UNLOAD, measure());
+const eventScroll = () => emitter.emit(SCROLL, scrollMeasure());
+const eventLoad = () => emitter.emit(LOAD, measure());
 
 // Setup a pending resize function which raf will call
 // if there's a resize event queued
 let pendingResize;
-const pendingResizeEvent = () => emitter.trigger(RESIZE, (dimensions = measure()));
+const pendingResizeEvent = () => emitter.trigger(RESIZE, measure());
 // In this case, our event resize simply assigns
 // the pendingResizeEvent (which dispatches the dimensions)
 // to the pendingResize variable
@@ -77,6 +75,8 @@ const unbind = function() {
 
 // Init ******************************
 
+measure();
+scrollMeasure();
 bind();
 
 // Public ******************************
@@ -91,27 +91,33 @@ export default Object.assign(emitter, {
 	},
 
 	scroll() {
-		return scrollPosition;
+		return {
+			top: data.top,
+			left: data.left,
+		};
 	},
 	scrollTop() {
-		return scrollPosition.top;
+		return data.top;
 	},
 	scrollLeft() {
-		return scrollPosition.left;
+		return data.left;
 	},
 
 	dimensions() {
-		return dimensions;
+		return {
+			width: data.width,
+			height: data.height,
+		};
 	},
 	width() {
-		return dimensions.width;
+		return data.width;
 	},
 	height() {
-		return dimensions.height;
+		return data.height;
 	},
 
 	measure() {
-		return (dimensions = measure());
+		return measure();
 	},
 
 	update() {
