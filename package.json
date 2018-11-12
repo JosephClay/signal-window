@@ -1,8 +1,9 @@
 {
   "name": "signal-window",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "window events without the DOM thrashing",
   "main": "./src/index.js",
+  "browser": "./dist/signal-window.min.js",
   "scripts": {
     "test": "node -r esm test",
     "build": "webpack"
