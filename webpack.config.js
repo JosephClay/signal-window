@@ -14,6 +14,9 @@ module.exports = {
 		path: path.resolve(process.cwd(), 'dist'),
 		filename: 'signal-window.min.js',
 	},
+	externals: [
+		'signal-js',
+	],
 	module: {
 		rules: [
 			{
