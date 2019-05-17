@@ -23,8 +23,8 @@ const measure = function() {
 	const doc = html();
 	const bod = body();
 
-	data.width = global.innerWidth || (doc && doc.clientWidth) || (bod && bod.clientWidth),
-	data.height = global.innerHeight || (doc && doc.clientHeight) || (bod && bod.clientHeight)
+	data.width = global.innerWidth || (doc && doc.clientWidth) || (bod && bod.clientWidth);
+	data.height = global.innerHeight || (doc && doc.clientHeight) || (bod && bod.clientHeight);
 	
 	return data;
 };
