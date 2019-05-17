@@ -1,6 +1,6 @@
 {
   "name": "signal-window",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "window events without the DOM thrashing",
   "main": "./index.js",
   "module": "./src/index.js",

@@ -58,19 +58,23 @@ const eventResize = () => (pendingResize = pendingResizeEvent);
 // Bindings ******************************
 
 const bind = function() {
-	global.addEventListener(RESIZE, eventResize, false);
-	global.addEventListener(SCROLL, eventScroll, false);
-	global.addEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
-	global.addEventListener(UNLOAD, eventUnload, false);
-	global.addEventListener(LOAD, eventLoad, false);
+	const { addEventListener } = global;
+	if (!addEventListener) return;
+	addEventListener(RESIZE, eventResize, false);
+	addEventListener(SCROLL, eventScroll, false);
+	addEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
+	addEventListener(UNLOAD, eventUnload, false);
+	addEventListener(LOAD, eventLoad, false);
 };
 
 const unbind = function() {
-	global.removeEventListener(RESIZE, eventResize, false);
-	global.removeEventListener(SCROLL, eventScroll, false);
-	global.removeEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
-	global.removeEventListener(UNLOAD, eventUnload, false);
-	global.removeEventListener(LOAD, eventLoad, false);
+	const { removeEventListener } = global;
+	if (!removeEventListener) return;
+	removeEventListener(RESIZE, eventResize, false);
+	removeEventListener(SCROLL, eventScroll, false);
+	removeEventListener(ORIENTATIONCHANGE, eventOrientationChange, false);
+	removeEventListener(UNLOAD, eventUnload, false);
+	removeEventListener(LOAD, eventLoad, false);
 };
 
 // Init ******************************
